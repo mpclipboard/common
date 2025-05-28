@@ -15,18 +15,18 @@ impl Store {
     }
 
     #[must_use]
-    pub fn add(&mut self, clip: Clip) -> bool {
+    pub fn add(&mut self, clip: &Clip) -> bool {
         match self.clip.as_mut() {
             Some(current) => {
-                if clip.timestamp > current.timestamp {
-                    *current = clip;
+                if clip.timestamp > current.timestamp && clip.text != current.text {
+                    *current = clip.clone();
                     true
                 } else {
                     false
                 }
             }
             None => {
-                self.clip = Some(clip);
+                self.clip = Some(clip.clone());
                 true
             }
         }
