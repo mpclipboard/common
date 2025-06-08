@@ -13,16 +13,16 @@ impl Response {
     }
 }
 
-impl From<Response> for Message {
-    fn from(response: Response) -> Self {
-        Message::text(serde_json::to_string(&response).unwrap())
+impl From<&Response> for Message {
+    fn from(response: &Response) -> Self {
+        Message::text(serde_json::to_string(response).unwrap())
     }
 }
 
-impl TryFrom<Message> for Response {
+impl TryFrom<&Message> for Response {
     type Error = anyhow::Error;
 
-    fn try_from(message: Message) -> Result<Self, Self::Error> {
+    fn try_from(message: &Message) -> Result<Self, Self::Error> {
         let text = message.as_text().context("not a text message")?;
         let response: Response = serde_json::from_str(text).context("malformed jsom message")?;
         Ok(response)

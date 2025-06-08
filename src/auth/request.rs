@@ -26,16 +26,16 @@ impl std::fmt::Debug for Request {
     }
 }
 
-impl From<Request> for Message {
-    fn from(request: Request) -> Self {
-        Message::text(serde_json::to_string(&request).unwrap())
+impl From<&Request> for Message {
+    fn from(request: &Request) -> Self {
+        Message::text(serde_json::to_string(request).unwrap())
     }
 }
 
-impl TryFrom<Message> for Request {
+impl TryFrom<&Message> for Request {
     type Error = anyhow::Error;
 
-    fn try_from(message: Message) -> Result<Self, Self::Error> {
+    fn try_from(message: &Message) -> Result<Self, Self::Error> {
         let text = message.as_text().context("not a text message")?;
         let request: Request = serde_json::from_str(text).context("malformed message json")?;
         Ok(request)

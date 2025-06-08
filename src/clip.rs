@@ -21,16 +21,16 @@ impl Clip {
     }
 }
 
-impl From<Clip> for Message {
-    fn from(clip: Clip) -> Self {
-        Message::text(serde_json::to_string(&clip).unwrap())
+impl From<&Clip> for Message {
+    fn from(clip: &Clip) -> Self {
+        Message::text(serde_json::to_string(clip).unwrap())
     }
 }
 
-impl TryFrom<Message> for Clip {
+impl TryFrom<&Message> for Clip {
     type Error = anyhow::Error;
 
-    fn try_from(message: Message) -> Result<Self, Self::Error> {
+    fn try_from(message: &Message) -> Result<Self, Self::Error> {
         let text = message.as_text().context("not a text message")?;
         let clip: Clip = serde_json::from_str(text).context("malformed json message")?;
         Ok(clip)
